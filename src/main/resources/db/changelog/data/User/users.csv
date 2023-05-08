@@ -1,0 +1,3 @@
+username;password;email;image;role
+sus;$2a$10$aAbCg1baXzoufiKpspmaJulrPeM4l1PE4GDVnsg5n6Y0zH/Xf9Dwm;s@s.s;admin.jpg;ROLE_ADMIN
+usu;$2a$10$s9F7bPTLcZQvnITcyhAR9uSZyufXos.COXq0jpkJu1NSAkIT/LTnu;u@u.u;admin.jpg;ROLE_USER
