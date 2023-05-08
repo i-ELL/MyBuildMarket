@@ -15,19 +15,19 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container px-4 px-lg-5">
     <a class="navbar-brand" th:href="@{/}">CinemaWorld</a>
-    <form class="d-flex m-0">
-      <a th:if="${userInfo.isAuth}" th:href="@{/user/profile}" class="btn btn-outline-dark me-2" type="submit">
-        <i class="bi-heart-fill me-1"></i>
-        Избранное
-        <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-      </a>
-      <a th:if="${userInfo.isAuth}" th:href="@{/user/profile}" class="btn btn-outline-dark me-2">Профиль</a>
-      <a th:if="${!userInfo.isAuth}" href="/auth/login" class="btn btn-outline-dark me-2" type="submit">Войти</a>
-      <a th:if="${!userInfo.isAuth}" href="/auth/register" class="btn btn-outline-dark me-2"
-         type="submit">Регистрация</a>
-
-    </form>
-  </div>
+    <div class="d-flex">
+      <form class="d-flex m-0">
+        <a th:if="${userInfo.isAuth}" th:href="@{/user/profile}" th:text="${userInfo.user.getUsername()}" class="btn btn-primary me-2"></a>
+        <a th:if="${!userInfo.isAuth}" href="/auth/login" class="btn btn-primary me-2" type="submit">Войти</a>
+        <a th:if="${!userInfo.isAuth}" href="/auth/register" class="btn btn-success me-2"
+           type="submit">Регистрация</a>
+      </form>
+      <form th:if="${userInfo.isAuth}" th:method="POST" th:action="@{/logout}" class="m-0">
+        <input type="submit"
+               class="btn btn-danger me-2 ui-helper-clearfix"
+               value="Выйти"/>
+      </form>
+    </div>
   </div>
 </nav>
 

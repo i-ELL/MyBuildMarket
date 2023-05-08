@@ -20,7 +20,10 @@ public class HomeController {
         model.addAttribute("products", productService.getAllProducts());
 
         // Провряем, авторизован ли пользователь добавляя переменную
+//        model.addAttribute("userInfo", authService.getUserInfo());
+        // Провряем, авторизован ли пользователь добавляя переменную
         model.addAttribute("userInfo", authService.getUserInfo());
+
 
         // Если пользователь авторизован, то добавляем его в модель
         authService.getAuthUser().ifPresent(user -> model.addAttribute("user", user));

@@ -6,21 +6,21 @@
     <changeSet id="create-products-table" author="admin">
         <createTable tableName="products">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" primaryKeyName="user_id"/>
             </column>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(1000)"/>
             <column name="price" type="VARCHAR(255)"/>
-            <column name="image" type="VARCHAR(255)"/>
+            <column name="image" type="VARCHAR(1000)"/>
         </createTable>
     </changeSet>
 
     <changeSet author="author" id="create_table_users">
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints  nullable="false"/>
+                <constraints  nullable="false" primaryKey="true" primaryKeyName="product_id"/>
             </column>
             <column name="username" type="varchar(255)"/>
             <column name="password" type="varchar(255)">
@@ -34,5 +34,21 @@
             </column>
             <column name="image" type="VARCHAR(255)"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="create_users_products" author="admin">
+        <createTable tableName="users_products">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <!--        <addPrimaryKey-->
+        <!--                tableName="users_products"-->
+        <!--                columnNames="user_id, product_id"-->
+        <!--                constraintName="users_products_pk"-->
+        <!--        />-->
     </changeSet>
 </databaseChangeLog>
