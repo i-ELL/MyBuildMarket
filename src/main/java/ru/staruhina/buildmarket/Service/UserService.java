@@ -347,4 +347,9 @@ public class UserService {
 
         return boughtProducts.contains(product);
     }
+
+    @Transactional
+    public void deleteById(int id) {
+        userRepository.deleteById(id);
+    }
 }
