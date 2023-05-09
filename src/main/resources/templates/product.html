@@ -15,20 +15,16 @@
 </head>
 <body>
 <section layout:fragment="content">
-    страница товара
     <section class="py-5">
         <div class="container px-4 px-lg-5 my-5">
             <div class="row gx-4 gx-lg-5 align-items-center">
-                <!--                    Постер-->
                 <div class="col-md-6">
                     <img class="card-img-top mb-5 mb-md-0" alt="..." th:src="${product.getImage()}">
                 </div>
                 <div class="col-md-6">
-                    <!--                    Название-->
                     <h1 class="display-5 fw-bolder" th:text="${product.getName()}"></h1>
 
                     <h2 class="fw-semibold text-success" th:text="${'Цена: ' + product.getPrice() + '₽'}"></h2>
-                    <!--                    Описание-->
                     <p class="lead" th:text="${product.getDescription()}"></p>
                     <div class="d-flex">
                         <form class="m-0"

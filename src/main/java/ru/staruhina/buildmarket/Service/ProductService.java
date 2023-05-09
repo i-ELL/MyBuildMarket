@@ -1,6 +1,7 @@
 package ru.staruhina.buildmarket.Service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.staruhina.buildmarket.Domain.model.Product;
 import ru.staruhina.buildmarket.Repository.ProductRepository;
@@ -20,7 +21,7 @@ public class ProductService {
      * @return
      */
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     /**
@@ -51,5 +52,9 @@ public class ProductService {
         return products.stream()
                 .mapToDouble(Product::getPrice)
                 .sum();
+    }
+
+    public Product save(Product product) {
+        return productRepository.save(product);
     }
 }
