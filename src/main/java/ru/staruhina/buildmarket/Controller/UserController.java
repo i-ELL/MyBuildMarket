@@ -1,12 +1,12 @@
 package ru.staruhina.buildmarket.Controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+import ru.staruhina.buildmarket.Domain.dto.UserEditDTO;
 import ru.staruhina.buildmarket.Service.AuthService;
 import ru.staruhina.buildmarket.Service.ProductService;
 import ru.staruhina.buildmarket.Service.UserService;
@@ -20,21 +20,17 @@ public class UserController {
     private final AuthService authService;
     private final UserService userService;
 
-//    @PostMapping("/add-to-favorite/{id}")
-//    public String addToFavorite(@PathVariable Integer id, Model model) {
-//        model.addAttribute("userInfo", authService.getUserInfo());
-//
-//        if (userService.addToCartByProductId(id)) {
-//            return "redirect:/products/" + id + "?success";
-//        } else {
-//            return "redirect:/products/" + id + "?error";
-//        }
-//    }
-
-    @PostMapping("/add-to-favourite/{id}")
-    public String addToFavorite(Model model, @PathVariable int id) {
+    /**
+     * Добавление товара в корзину по id товара
+     *
+     * @param model
+     * @param id
+     * @return
+     */
+    @PostMapping("/add-to-cart/{id}")
+    public String addToCart(Model model, @PathVariable int id) {
         model.addAttribute("userInfo", authService.getUserInfo());
-        userService.addToFavouriteById(id);
+        userService.addToCartByProductId(id);
         return "redirect:/";
     }
 
@@ -45,29 +41,71 @@ public class UserController {
      */
     @GetMapping("/profile")
     public String profile(Model model) {
-        // Провряем, авторизован ли пользователь добавляя переменную isAuth
+
+        // Добавляем информацию о пользователе в модель
         model.addAttribute("userInfo", authService.getUserInfo());
 
+        var user = authService.getUserInfo().getUser();
 
-        // Если пользователь авторизован, то добавляем его в модель
-        var user = authService.getAuthUser().orElse(null);
-
-        var favourite = user.getProducts();
-        model.addAttribute("favourite", favourite);
-        model.addAttribute("favouriteTotal", ProductService.getFavouritesTotal(favourite));
+        var cart = user.getProducts();
+        model.addAttribute("cart", cart);
+        model.addAttribute("cartTotal", ProductService.getCartTotal(cart));
 
         return "profile";
     }
 
 
-
-    /*
-     * Удаление товара из избранного по id товара
+    /**
+     * Удаление из корзины
+     *
+     * @return
      */
-    @PostMapping("/delete-from-favourite/{id}")
-    public String deleteFromFavourite(Model model, @PathVariable int id) {
+    @PostMapping("/remove-from-cart/{id}")
+    public String removeFromCart(Model model, @PathVariable int id) {
         model.addAttribute("userInfo", authService.getUserInfo());
-        userService.deleteFromFavouriteById(id);
-        return "redirect:/user/profile";
+
+        if (userService.removeFromCartByProductId(id)) {
+            return "redirect:/user/profile?success";
+        } else {
+            return "redirect:/user/profile?error";
+        }
+    }
+
+    @GetMapping("/edit")
+    public String edit(
+            @ModelAttribute("userDTO") UserEditDTO userEditDTO,
+            Model model
+    ) {
+
+        // Добавляем информацию о пользователе в модель
+        model.addAttribute("userInfo", authService.getUserInfo());
+
+        userEditDTO = userService.getUserEditDTO();
+        model.addAttribute("userDTO", userEditDTO);
+
+        return "edit-profile";
+    }
+
+    /**
+     * Изменение данных пользователя
+     *
+     * @return
+     */
+    @PostMapping("/edit")
+    public String editPost(
+            @Valid @ModelAttribute("userDTO") UserEditDTO userEditDTO,
+            BindingResult result,
+            Model model
+    ) {
+        model.addAttribute("userInfo", authService.getUserInfo());
+
+        if (result.hasErrors()) {
+            return "edit-profile";
+        }
+
+        if (userService.update(userEditDTO)) {
+            return "redirect:/user/profile";
+        }
+        return "edit-profile";
     }
 }

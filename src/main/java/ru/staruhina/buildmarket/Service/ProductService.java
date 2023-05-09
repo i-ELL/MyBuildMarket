@@ -46,12 +46,10 @@ public class ProductService {
      *
      * @return
      */
-    public static double getFavouritesTotal(Set<Product> products) {
-        // Возврат списка избранных фильмов
-        var total = 0;
-        for (Product product : products) {
-            total += product.getId();
-        }
-        return total;
+
+    public static double getCartTotal(Set<Product> products) {
+        return products.stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
     }
 }

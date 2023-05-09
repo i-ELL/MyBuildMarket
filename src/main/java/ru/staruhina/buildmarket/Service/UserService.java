@@ -3,6 +3,7 @@ package ru.staruhina.buildmarket.Service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.staruhina.buildmarket.Domain.dto.UserEditDTO;
 import ru.staruhina.buildmarket.Domain.dto.UserRegisterDTO;
 import ru.staruhina.buildmarket.Domain.model.Product;
 import ru.staruhina.buildmarket.Domain.model.User;
@@ -99,45 +100,13 @@ public class UserService {
         save(userMapper.registerDTOToUser(userRegisterDTO));
     }
 
-
     /**
-     * Добавление товара в избранное по id фильма
+     * Добавление продукта в корзину
      *
-     * @param productId
-     * @return
-     */
-    public boolean addToFavouriteById(int productId) {
-        //Получаем авторизованного пользователя
-        var user = authService.getAuthUser().orElse(null);
-
-        // Если пользователь не авторизован, то ничего не делаем
-        if (user == null) {
-            return false;
-        }
-
-        // Добавляем фильм в избранное
-        var product = productService.findById(productId).orElse(null);
-        // Получаем список фильмов пользователя
-        var products = user.getProducts();
-
-        // Если фильм уже есть в избранном, то ничего не делаем
-        if (products.contains(product)) {
-            return false;
-        }
-        //Добавляем фильм в избранное
-        products.add(product);
-        //Сохраняем пользователя
-        save(user);
-        return true;
-    }
-
-
-    /**
-     * Добавление фильма в избранное
      * @param product
-     * @return
      */
-    public boolean addToFavourite(Product product) {
+
+    public boolean addToCart(Product product) {
         // Получаем авторизованного пользователя
         var user = authService.getAuthUser().orElse(null);
 
@@ -163,84 +132,118 @@ public class UserService {
     }
 
     /**
-     * Удаление фильма из избранного по id фильма
-     * @param id
-     * @return
+     * Добавление товара в корзину по id товара
+     *
+     * @param productId
      */
-    public boolean deleteFromFavouriteById(int id) {
-        var product = productService.findById(id).orElse(null);
-
-        if (product == null) {
-            return false;
-        } else {
-            return removeFromFavourite(product);
+    public void addToCartByProductId(int productId) {
+        // Получаем авторизованного пользователя
+        var user = authService.getAuthUser().orElse(null);
+        // Если пользователь не авторизован, то ничего не делаем
+        if (user == null) {
+            return;
         }
+        // Получаем товар по id
+        var product = productService.findById(productId).orElse(null);
+
+        // Получаем список товаров в корзине
+        var products = user.getProducts();
+
+        // Если товар уже есть в корзине, то ничего не делаем
+        if (products.contains(product)) {
+            return;
+        }
+        // Добавляем товар в корзину
+        products.add(product);
+
+        // Сохраняем пользователя
+        save(user);
     }
 
     /**
-     * Удаление фильма из избранного
+     * Удаление продукта из корзины
+     *
      * @param product
      * @return
      */
-    public boolean removeFromFavourite(Product product) {
+
+    public boolean removeFromCart(Product product) {
+        // Получаем авторизованного пользователя
         var user = authService.getAuthUser().orElse(null);
+
+        // Если пользователь не авторизован, то ничего не делаем
         if (user == null) {
             return false;
         }
 
+        // Удаляем товар из корзины
         var products = user.getProducts();
         products.remove(product);
 
+        // Сохраняем пользователя
         save(user);
         return true;
     }
 
+    /**
+     * Удаление товара из корзины по id товара
+     *
+     * @param productId
+     * @return
+     */
+    public boolean removeFromCartByProductId(int productId) {
+        var product = productService.findById(productId).orElse(null);
 
-//    /**
-//     * Обновление данных пользователя
-//     */
-//    public void update(User user, UserEditDTO userEditDTO) {
-//        user.setUsername(userEditDTO.getUsername());
-//        user.setImage(userEditDTO.getImage());
-//        user.setDescription(userEditDTO.getDescription());
-//        save(user);
-//    }
+        if (product == null) {
+            return false;
+        } else {
+            return removeFromCart(product);
+        }
+    }
 
-//    /**
-//     * Обновление данных пользователя
-//     * @param userEditDTO
-//     * @return
-//     */
-//    public boolean update(UserEditDTO userEditDTO) {
-//        // Получаем авторизованного пользователя
-//        var user = authService.getAuthUser().orElse(null);
-//
-//        // Если пользователь не авторизован, то ничего не делаем
-//        if (user == null) {
-//            return false;
-//        }
-//        // Проверяем, что username не занят другим пользователем
-//        var userWithSameUsername = findByUserName(userEditDTO.getUsername()).orElse(null);
-//        if (userWithSameUsername != null && !userWithSameUsername.equals(user)) {
-//            return false;
-//        }
-//
-//        // Обновляем данные пользователя
-//        update(user, userEditDTO);
-//        return true;
-//    }
-//
-//    /**
-//     * Получение данных пользователя
-//     * @return
-//     */
-//    public UserEditDTO getUserEditDTO() {
-//        var user = authService.getAuthUser().orElse(null);
-//        if (user == null) {
-//            return null;
-//        }
-//        var user1 = findByUserName(user.getUsername()).orElse(null);
-//        return userMapper.userToUserEditDTO(user1);
-//    }
+    /**
+     * Обновление данных пользователя
+     *
+     * @param user
+     * @param userEditDTO
+     */
+    public void update(User user, UserEditDTO userEditDTO) {
+        user.setUsername(userEditDTO.getUsername());
+        user.setImage(userEditDTO.getImage());
+        save(user);
+    }
 
+
+    /**
+     * Обновление данных пользователя
+     *
+     * @param userEditDTO
+     */
+    public boolean update(UserEditDTO userEditDTO) {
+        // Получаем авторизованного пользователя
+        var user = authService.getAuthUser().orElse(null);
+
+        // Если пользователь не авторизован, то ничего не делаем
+        if (user == null) {
+            return false;
+        }
+
+        // Проверяем, что email не занят другим пользователем
+        var existing = findByUserName(userEditDTO.getUsername());
+        if (existing.isPresent() && !existing.get().equals(user)) {
+            return false;
+        }
+
+        // Обновляем данные пользователя
+        update(user, userEditDTO);
+        return true;
+    }
+
+    public UserEditDTO getUserEditDTO() {
+        var user = authService.getAuthUser().orElse(null);
+        if (user == null) {
+            return null;
+        }
+        return userMapper.userToUserEditDTO(user);
+    }
 }

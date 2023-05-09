@@ -32,7 +32,7 @@
                             <!-- Film name-->
                             <h5 class="fw-bolder" th:text="${product.getName()}"></h5>
                             <!-- Film actor-->
-                            <h5 class="fw-normal" th:text="${product.getPrice()}"></h5>
+                            <h5 class="fw-normal text-success" th:text="${product.getPrice() + '₽'}"></h5>
                         </div>
                     </div>
                     <!-- Film actions-->
@@ -41,11 +41,9 @@
                             <a class="btn btn-outline-dark flex-grow-1 me-2"
                                th:href="@{/products/{id}(id=${product.getId()})}">Перейти</a>
                             <form class="m-0"
-                                  th:action="@{/user/add-to-favourite/{id}(id=${product.getId()})}"
+                                  th:action="@{/user/add-to-cart/{id}(id=${product.getId()})}"
                                   th:method="post">
-                                <button class="btn btn-outline-dark me-2" type="submit">
-                                    <i class="bi-heart-fill"> </i>
-                                </button>
+                                <button class="btn btn-outline-dark me-2" type="submit">В корзину</button>
                             </form>
 
                         </div>
