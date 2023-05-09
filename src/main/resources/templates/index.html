@@ -61,7 +61,7 @@
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             <div class="d-flex">
                                 <a class="btn btn-outline-dark flex-grow-1 me-2"
-                                   th:href="@{/products/{id}(id=${product.getId()})}">Перейти</a>
+                                   th:href="@{products/{id}(id=${product.getId()})}">Перейти</a>
                                 <form class="m-0"
                                       th:action="@{/user/add-to-cart/{id}(id=${product.getId()})}"
                                       th:method="post">

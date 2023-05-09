@@ -1,13 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/back
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: root
+    password: 01
     driverClassName: org.postgresql.Driver
-#    url: jdbc:postgresql://localhost:5432/postgres
-#    username: postgres
-#    password: 01
-#    driverClassName: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: none

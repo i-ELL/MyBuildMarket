@@ -1,16 +1,20 @@
 package ru.staruhina.buildmarket.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.staruhina.buildmarket.Domain.dto.UserEditDTO;
 import ru.staruhina.buildmarket.Domain.dto.UserRegisterDTO;
+import ru.staruhina.buildmarket.Domain.model.Order;
 import ru.staruhina.buildmarket.Domain.model.Product;
 import ru.staruhina.buildmarket.Domain.model.User;
 import ru.staruhina.buildmarket.Mapper.UserMapper;
 import ru.staruhina.buildmarket.Repository.UserRepository;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +26,7 @@ public class UserService {
     private final AuthService authService;
     private final ProductService productService;
     private final PasswordEncoder passwordEncoder;
+    private final OrderService orderService;
 
     /**
      * Хеширование пароля
@@ -36,6 +41,7 @@ public class UserService {
     /**
      * Сохранение пользователя
      */
+    @Transactional
     public void save(User user) {
         userRepository.save(user);
     }
@@ -46,7 +52,7 @@ public class UserService {
      * @return
      */
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     /**
@@ -96,6 +102,7 @@ public class UserService {
      *
      * @param userRegisterDTO
      */
+    @Transactional
     public void register(UserRegisterDTO userRegisterDTO) {
         save(userMapper.registerDTOToUser(userRegisterDTO));
     }
@@ -106,6 +113,7 @@ public class UserService {
      * @param product
      */
 
+    @Transactional
     public boolean addToCart(Product product) {
         // Получаем авторизованного пользователя
         var user = authService.getAuthUser().orElse(null);
@@ -136,6 +144,7 @@ public class UserService {
      *
      * @param productId
      */
+    @Transactional
     public void addToCartByProductId(int productId) {
         // Получаем авторизованного пользователя
         var user = authService.getAuthUser().orElse(null);
@@ -167,6 +176,7 @@ public class UserService {
      * @return
      */
 
+    @Transactional
     public boolean removeFromCart(Product product) {
         // Получаем авторизованного пользователя
         var user = authService.getAuthUser().orElse(null);
@@ -191,6 +201,7 @@ public class UserService {
      * @param productId
      * @return
      */
+    @Transactional
     public boolean removeFromCartByProductId(int productId) {
         var product = productService.findById(productId).orElse(null);
 
@@ -207,6 +218,7 @@ public class UserService {
      * @param user
      * @param userEditDTO
      */
+    @Transactional
     public void update(User user, UserEditDTO userEditDTO) {
         user.setUsername(userEditDTO.getUsername());
         user.setImage(userEditDTO.getImage());
@@ -219,6 +231,7 @@ public class UserService {
      *
      * @param userEditDTO
      */
+    @Transactional
     public boolean update(UserEditDTO userEditDTO) {
         // Получаем авторизованного пользователя
         var user = authService.getAuthUser().orElse(null);
@@ -245,5 +258,93 @@ public class UserService {
             return null;
         }
         return userMapper.userToUserEditDTO(user);
+    }
+
+    /**
+     * Добавление товара в купленные
+     */
+    @Transactional
+    public boolean addToBought(User user, Product product) {
+        // Получаем список купленных товаров
+        var boughtProducts = user.getBoughtProducts();
+
+        // Если товар уже есть в купленных, то ничего не делаем
+        if (boughtProducts.contains(product)) {
+            return false;
+        }
+
+        // Добавляем товар в купленные
+        boughtProducts.add(product);
+
+        // Сохраняем пользователя
+        save(user);
+        return true;
+    }
+
+    /**
+     * Оформление заказа
+     *
+     * @return
+     */
+    @Transactional
+    public boolean checkout() {
+        // Получаем авторизованного пользователя
+        var user = authService.getUserInfo().getUser();
+
+        // Если пользователь не авторизован, то ничего не делаем
+        if (user == null) {
+            return false;
+        }
+
+        // Получаем список товаров в корзине
+        var products = user.getProducts();
+
+        // Если корзина пуста, то ничего не делаем
+        if (products.isEmpty()) {
+            return false;
+        }
+        var total = ProductService.getCartTotal(products);
+
+        // Создаём заказ
+        var order = new Order();
+        order.setUser(user);
+        for (Product product : products) {
+            var toAdd = productService.findById(product.getId()).orElse(null);
+            order.getProducts().add(toAdd);
+            addToBought(user, toAdd);
+        }
+        order.setTotal(total);
+        order.setDate(LocalDateTime.now());
+
+        // Сохраняем заказ
+        orderService.save(order);
+
+        // Очищаем корзину
+        products.clear();
+
+        // Сохраняем пользователя
+        save(user);
+
+        return true;
+    }
+
+    /**
+     * Проверка, что товар куплен
+     * @param product
+     * @return
+     */
+    public boolean isBought(Product product) {
+        // Получаем авторизованного пользователя
+        var user = authService.getAuthUser().orElse(null);
+
+        // Если пользователь не авторизован, то ничего не делаем
+        if (user == null) {
+            return false;
+        }
+
+        // Получаем список купленных товаров
+        var boughtProducts = user.getBoughtProducts();
+
+        return boughtProducts.contains(product);
     }
 }

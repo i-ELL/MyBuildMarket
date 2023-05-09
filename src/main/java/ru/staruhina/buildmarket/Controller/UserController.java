@@ -51,6 +51,8 @@ public class UserController {
         model.addAttribute("cart", cart);
         model.addAttribute("cartTotal", ProductService.getCartTotal(cart));
 
+        model.addAttribute("boughtProducts", productService.getBoughtProductsByUser(user));
+
         return "profile";
     }
 
@@ -65,9 +67,9 @@ public class UserController {
         model.addAttribute("userInfo", authService.getUserInfo());
 
         if (userService.removeFromCartByProductId(id)) {
-            return "redirect:/user/profile?success";
+            return "redirect:/user/profile?success" + id;
         } else {
-            return "redirect:/user/profile?error";
+            return "redirect:/user/profile?error" + id;
         }
     }
 
@@ -107,5 +109,14 @@ public class UserController {
             return "redirect:/user/profile";
         }
         return "edit-profile";
+    }
+
+    @PostMapping("/checkout")
+    public String checkout() {
+        if (userService.checkout()) {
+            return "redirect:/user/profile?success";
+        } else {
+            return "redirect:/user/profile?error";
+        }
     }
 }

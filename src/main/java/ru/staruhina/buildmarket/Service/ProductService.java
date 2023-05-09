@@ -1,9 +1,11 @@
 package ru.staruhina.buildmarket.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.staruhina.buildmarket.Domain.model.Product;
+import ru.staruhina.buildmarket.Domain.model.User;
 import ru.staruhina.buildmarket.Repository.ProductRepository;
 
 import java.util.List;
@@ -39,7 +41,7 @@ public class ProductService {
      * @return
      */
     public Product getById(int id) {
-        return findById(id).orElseThrow();
+        return findById(id).orElse(null);
     }
 
     /**
@@ -54,7 +56,27 @@ public class ProductService {
                 .sum();
     }
 
-    public Product save(Product product) {
-        return productRepository.save(product);
+    @Transactional
+    public void save(Product product) {
+        productRepository.save(product);
+    }
+
+    /**
+     * Получение всех продуктов
+     *
+     * @return
+     */
+    public List<Product> getAll() {
+        return productRepository.findAll();
+    }
+
+    /**
+     * Получение всех продуктов которые купил пользователь
+     *
+     * @param user
+     * @return
+     */
+    public List<Product> getBoughtProductsByUser(User user) {
+        return productRepository.findAllByOrders_User(user);
     }
 }

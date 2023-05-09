@@ -96,4 +96,12 @@ public class AdminController {
         adminService.saveProduct(product);
         return "redirect:/admin/products?success";
     }
+
+    @GetMapping("/orders")
+    public String orders(
+            Model model
+    ) {
+        model.addAttribute("orders", adminService.getAllOrders());
+        return "admin/orders";
+    }
 }

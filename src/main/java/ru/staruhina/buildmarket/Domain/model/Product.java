@@ -16,6 +16,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "users", attributeNodes = @NamedAttributeNode("users"))
+})
 public class Product {
     @Id
     @Column(name = "id")
@@ -44,6 +47,9 @@ public class Product {
     @Column(name = "image")
     private String image;
 
+    /**
+     * Список покупателей у которых товар в корзине
+     */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_products",
@@ -51,9 +57,29 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> users = new HashSet<>();
-    // OneToMany
-    //    @Column(name = "genre")
-    //    private String genre;
+
+    /**
+     * Список пользователей, которые купили товар
+     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_bought_products",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> usersBought = new HashSet<>();
+
+
+    /**
+     * Список заказов, в которых есть товар
+     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "products_orders",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "order_id")
+    )
+    private Set<Order> orders = new HashSet<>();
 
 
     @Override

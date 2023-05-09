@@ -3,6 +3,7 @@ package ru.staruhina.buildmarket.Service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.staruhina.buildmarket.Domain.model.Order;
 import ru.staruhina.buildmarket.Domain.model.Product;
 import ru.staruhina.buildmarket.Domain.model.User;
 import ru.staruhina.buildmarket.Mapper.UserMapper;
@@ -16,6 +17,7 @@ public class AdminService {
     private final UserService userService;
     private final ProductService filmService;
     private final UserMapper userMapper;
+    private final OrderService orderService;
 
     /**
      * Получение всех пользователей
@@ -65,5 +67,9 @@ public class AdminService {
     @Transactional
     public void saveProduct(Product product) {
         filmService.save(product);
+    }
+
+    public List<Order> getAllOrders() {
+        return orderService.getAll();
     }
 }

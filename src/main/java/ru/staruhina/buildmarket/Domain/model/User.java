@@ -46,6 +46,25 @@ public class User {
     )
     private Set<Product> products = new HashSet<>();
 
+    /**
+     * Заказы пользователя
+     */
+    @OneToMany
+    @JoinColumn(name = "order_id")
+    private Set<Order> orders = new HashSet<>();
+
+    /**
+     * Купленные товары пользователя
+     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_bought_products",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> boughtProducts = new HashSet<>();
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

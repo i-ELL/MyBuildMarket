@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.staruhina.buildmarket.Service.AuthService;
 import ru.staruhina.buildmarket.Service.ProductService;
+import ru.staruhina.buildmarket.Service.UserService;
 
 
 @Controller
@@ -16,6 +17,7 @@ import ru.staruhina.buildmarket.Service.ProductService;
 public class ProductController {
     private final ProductService productService;
     private final AuthService authService;
+    private final UserService userService;
 
     /**
      * Получение конкретного фильма
@@ -26,12 +28,7 @@ public class ProductController {
             @PathVariable("id") int id,
             Model model
     ) {
-
-//        // Провряем, авторизован ли пользователь добавляя переменную isAuth
-//        model.addAttribute("isAuth", authService.getAuthUser().isPresent());
-//
-//        // Если пользователь авторизован, то добавляем его в модель
-//        authService.getAuthUser().ifPresent(user -> model.addAttribute("user", user));
+        // Добавляем информацию о пользователе в модель
         model.addAttribute("userInfo", authService.getUserInfo());
 
         // Проверка на существование продукта
@@ -40,6 +37,7 @@ public class ProductController {
             return "redirect:/error";
         }
         model.addAttribute("product", product);
+        model.addAttribute("isBought", userService.isBought(product));
         return "product";
     }
 }

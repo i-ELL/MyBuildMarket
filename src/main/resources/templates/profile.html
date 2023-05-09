@@ -73,6 +73,39 @@
                             <span class="text-success"><strong th:text="${cartTotal + '₽'}"></strong></span>
                         </li>
                     </ul>
+                    <form class="d-inline" th:action="@{/user/checkout}"
+                          method="post"
+                          onsubmit="return confirm('Вы действительно хотите приобрести данные товары?');">
+                        <button type="submit" class="btn btn-primary btn-block">Оформить заказ</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="d-flex align-items-center mb-3 ">Список покупок</h6>
+                    <ul class="list-group ">
+                        <li th:each="item: ${boughtProducts}"
+                            class="list-group-item d-flex justify-content-between lh-sm">
+                            <div class="d-flex">
+                                <div>
+                                    <h6 class="my-0" th:text="${item.getName()}"></h6>
+                                    <small th:text="${item.getDescription().length() >  20 ? item.getDescription().substring(0, 20) + '...' : item.getDescription()}"
+                                           class="text-muted"></small>
+                                </div>
+                            </div>
+                            <a th:href="@{/products/{id}(id=${item.getId()})}"
+                               class="text-muted btn btn-outline btn-sm">
+                                <svg style="height: 24px;width: 24px;"
+                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

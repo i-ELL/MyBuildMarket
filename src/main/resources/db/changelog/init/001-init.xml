@@ -45,10 +45,45 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <!--        <addPrimaryKey-->
-        <!--                tableName="users_products"-->
-        <!--                columnNames="user_id, product_id"-->
-        <!--                constraintName="users_products_pk"-->
-        <!--        />-->
     </changeSet>
+
+    <changeSet id="create_table_orders" author="admin">
+        <createTable tableName="orders">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="order_id"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_users_bought_products" author="admin">
+        <createTable tableName="users_bought_products">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_products_orders" author="admin">
+        <createTable tableName="products_orders">
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
