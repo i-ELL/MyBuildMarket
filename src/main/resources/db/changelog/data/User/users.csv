@@ -1,3 +1,2 @@
 username;password;email;image;role
-sus;$2a$10$aAbCg1baXzoufiKpspmaJulrPeM4l1PE4GDVnsg5n6Y0zH/Xf9Dwm;s@s.s;https://static.vecteezy.com/system/resources/previews/002/003/950/original/builder-character-vector.jpg;ROLE_ADMIN
-usu;$2a$10$s9F7bPTLcZQvnITcyhAR9uSZyufXos.COXq0jpkJu1NSAkIT/LTnu;u@u.u;https://static.vecteezy.com/system/resources/previews/002/003/950/original/builder-character-vector.jpg;ROLE_ADMIN
+Администратор;$2a$10$s9F7bPTLcZQvnITcyhAR9uSZyufXos.COXq0jpkJu1NSAkIT/LTnu;AdminBuildMarket@mail.ru;https://static.vecteezy.com/system/resources/previews/002/003/950/original/builder-character-vector.jpg;ROLE_ADMIN

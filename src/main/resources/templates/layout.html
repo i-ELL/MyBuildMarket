@@ -14,11 +14,11 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container px-4 px-lg-5">
-    <a class="navbar-brand" th:href="@{/}">BuildMarket</a>
+    <a class="navbar-brand" style="margin-left: auto; margin-right: auto" th:href="@{/}">BuildMarket</a>
     <div class="d-flex">
       <form class="d-flex m-0">
         <a th:if="${userInfo.isAuth and userInfo.user.getRole() == 'ROLE_ADMIN'}" href="/admin/users"
-           class="btn btn-outline-primary me-2">Админ панель</a>
+           class="btn btn-outline-primary me-2">Панель администратора</a>
         <a th:if="${userInfo.isAuth}" th:href="@{/user/profile}" th:text="${userInfo.user.getUsername()}" class="btn btn-primary me-2"></a>
         <a th:if="${!userInfo.isAuth}" href="/auth/login" class="btn btn-primary me-2" type="submit">Войти</a>
         <a th:if="${!userInfo.isAuth}" href="/auth/register" class="btn btn-success me-2"

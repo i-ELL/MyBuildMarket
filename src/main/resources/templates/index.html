@@ -42,26 +42,26 @@
 
     <section class="py-5">
         <div class="container px-4 px-lg-5 mt-5">
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                <div class="col mb-5" th:each="product: ${products}">
-                    <div class="card h-100">
-                        <!-- Film image-->
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center" >
+                <div class="col mb-5"  th:each="product: ${products}">
+                    <div class="card h-100" style="border: solid 4px green" >
+                        <!-- product image-->
                         <img class="card-img-top;" style="height:100%; width: auto; object-fit: fill"
                              th:src="${product.getImage()}" alt="..."/>
-                        <!-- Film details-->
+                        <!-- product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
-                                <!-- Film name-->
+                                <!-- product name-->
                                 <h5 class="fw-bolder" th:text="${product.getName()}"></h5>
-                                <!-- Film actor-->
+                                <!-- product price-->
                                 <h5 class="fw-normal text-success" th:text="${product.getPrice() + '₽'}"></h5>
                             </div>
                         </div>
-                        <!-- Film actions-->
+                        <!-- product actions-->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             <div class="d-flex">
                                 <a class="btn btn-outline-dark flex-grow-1 me-2"
-                                   th:href="@{products/{id}(id=${product.getId()})}">Перейти</a>
+                                   th:href="@{products/{id}(id=${product.getId()})}">Подробнее</a>
                                 <form class="m-0"
                                       th:action="@{/user/add-to-cart/{id}(id=${product.getId()})}"
                                       th:method="post">
@@ -74,9 +74,6 @@
                 </div>
             </div>
         </div>
-    </section>
-    <section>
-        <p>конец главной страницы</p>
     </section>
 </section>
 </body>

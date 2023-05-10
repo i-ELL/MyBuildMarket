@@ -11,9 +11,6 @@ import java.util.Collections;
 @AllArgsConstructor
 public class SecurityUser implements UserDetails {
     private User user;
-    /*
-     *  Роль пользователя
-     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
@@ -22,13 +19,10 @@ public class SecurityUser implements UserDetails {
     public String getPassword() {
         return user.getPassword();
     }
-
     @Override
     public String getUsername() {
         return user.getUsername();
     }
-
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
